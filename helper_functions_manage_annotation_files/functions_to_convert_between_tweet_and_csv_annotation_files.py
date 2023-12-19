@@ -86,7 +86,6 @@ def tweet_to_df(path_to_tweet,path_to_audio_files,path_to_csv=None,additional_fi
 
 
 def df_to_tweet(input_df,path_to_tweet=None,additional_fields=None):
-    # 
     """Take a pandas Dataframe and convert it to the tweet (keys, elements) format. 
     Save the annotation matlab file if needed.
 
@@ -112,12 +111,12 @@ def df_to_tweet(input_df,path_to_tweet=None,additional_fields=None):
     elements : list of dicts
         All per-file annotation dicts
     """
-    keys = input_df['audio_file'].unique()
+    keys = input_df['notated_path'].unique()
     elements = []
     for key in keys:
         curr_file = str(key)
         curr_filenum = curr_file.split('_')[1]
-        curr_df = input_df[input_df['audio_file'] == key]
+        curr_df = input_df[input_df['notated_path'] == key]
         segType = np.array(curr_df['label'].astype(float))
         segFileStartTimes = list(curr_df['onset_s'].astype(float))
         segFileEndTimes = list(curr_df['offset_s'].astype(float))
@@ -128,6 +127,7 @@ def df_to_tweet(input_df,path_to_tweet=None,additional_fields=None):
         element = {'filenum':curr_filenum,
                    'segType':segType,
                    'segFileStartTimes':segFileStartTimes,
+                   'segAbsStartTimes':segFileStartTimes,
                    'segFileEndTimes':segFileEndTimes} | more_fields
         elements.append(element)
     if path_to_tweet != None:
